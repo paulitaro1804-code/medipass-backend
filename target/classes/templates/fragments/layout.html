@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+
+<!-- ╔══════════════════════════════════════════════════════════════════════╗
+     ║  SIDEBAR FRAGMENT                                                    ║
+     ╚══════════════════════════════════════════════════════════════════════╝ -->
+<nav th:fragment="sidebar" class="sidebar d-flex flex-column">
+    <div class="sidebar-brand">
+        <i class="bi bi-heart-pulse-fill me-2"></i>
+        <span>MEDIPASS</span>
+    </div>
+
+    <ul class="sidebar-nav flex-grow-1">
+
+        <!-- ADMIN -->
+        <li sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/dashboard/admin}" th:classappend="${currentPage == 'admin-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/dashboard/admin/users}" th:classappend="${currentPage == 'admin-users'} ? 'active'">
+                <i class="bi bi-people-fill"></i> Usuarios
+            </a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/dashboard/admin/audit}" th:classappend="${currentPage == 'admin-audit'} ? 'active'">
+                <i class="bi bi-clipboard-data-fill"></i> Auditoría
+            </a>
+        </li>
+        <li sec:authorize="hasRole('ADMIN')">
+            <a th:href="@{/dashboard/admin/reports}" th:classappend="${currentPage == 'admin-reports'} ? 'active'">
+                <i class="bi bi-bar-chart-fill"></i> Reportes
+            </a>
+        </li>
+
+        <!-- PATIENT -->
+        <li sec:authorize="hasAnyRole('PATIENT')">
+            <a th:href="@{/dashboard/patient}" th:classappend="${currentPage == 'patient-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Mi Panel
+            </a>
+        </li>
+
+        <!-- DOCTOR -->
+        <li sec:authorize="hasRole('DOCTOR')">
+            <a th:href="@{/dashboard/doctor}" th:classappend="${currentPage == 'doctor-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+
+        <!-- COORDINATOR -->
+        <li sec:authorize="hasRole('COORDINATOR')">
+            <a th:href="@{/dashboard/coordinator}" th:classappend="${currentPage == 'coord-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+
+        <!-- VALIDATOR -->
+        <li sec:authorize="hasRole('VALIDATOR')">
+            <a th:href="@{/dashboard/validator}" th:classappend="${currentPage == 'validator-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+        <li sec:authorize="hasRole('VALIDATOR')">
+            <a th:href="@{/dashboard/validator/policies}" th:classappend="${currentPage == 'validator-policies'} ? 'active'">
+                <i class="bi bi-shield-fill-check"></i> Pólizas
+            </a>
+        </li>
+
+        <!-- LAB -->
+        <li sec:authorize="hasRole('LAB')">
+            <a th:href="@{/dashboard/lab}" th:classappend="${currentPage == 'lab-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+
+        <!-- SUPPORT -->
+        <li sec:authorize="hasRole('SUPPORT')">
+            <a th:href="@{/dashboard/support}" th:classappend="${currentPage == 'support-home'} ? 'active'">
+                <i class="bi bi-speedometer2"></i> Dashboard
+            </a>
+        </li>
+    </ul>
+
+    <div class="sidebar-footer">
+        <a th:href="@{/swagger-ui/index.html}" target="_blank" class="d-block mb-2 text-white-50 small">
+            <i class="bi bi-code-slash me-1"></i> API Docs
+        </a>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit" class="btn-logout">
+                <i class="bi bi-box-arrow-left me-2"></i> Cerrar sesión
+            </button>
+        </form>
+    </div>
+</nav>
+
+<!-- ╔══════════════════════════════════════════════════════════════════════╗
+     ║  TOPBAR FRAGMENT                                                     ║
+     ╚══════════════════════════════════════════════════════════════════════╝ -->
+<header th:fragment="topbar(title)" class="topbar">
+    <div class="topbar-title" th:text="${title}">Título</div>
+    <div class="topbar-user">
+        <i class="bi bi-person-circle me-1"></i>
+        <span sec:authentication="name">Usuario</span>
+    </div>
+</header>
+
+</html>

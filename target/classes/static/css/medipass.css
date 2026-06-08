@@ -1,0 +1,216 @@
+/* ============================================================
+   MEDIPASS - Design System CSS
+   ============================================================ */
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* ── Animated gradient background ──────────────────────────── */
+@keyframes gradient-shift {
+  0%, 100% { background-position: 0% 50%; }
+  50%       { background-position: 100% 50%; }
+}
+.animated-gradient {
+  background: linear-gradient(135deg,#14182a 0%,#171c35 25%,#131729 50%,#191e33 75%,#14182a 100%);
+  background-size: 400% 400%;
+  animation: gradient-shift 15s ease infinite;
+}
+
+/* ── Float animation (hero visual) ─────────────────────────── */
+@keyframes float-y {
+  0%,100% { transform: translateY(0px); }
+  50%     { transform: translateY(-18px); }
+}
+@keyframes float-box {
+  0%,100% { transform: translateY(0px) rotateY(-8deg) rotateX(4deg); }
+  50%     { transform: translateY(-18px) rotateY(8deg) rotateX(-4deg); }
+}
+.hero-float { animation: float-y 6s ease-in-out infinite; }
+.medical-box-3d {
+  transform-style: preserve-3d;
+  perspective: 800px;
+  animation: float-box 6s ease-in-out infinite;
+}
+
+/* ── Pulse dot ──────────────────────────────────────────────── */
+@keyframes pulse-dot {
+  0%,100% { opacity:1; transform:scale(1); }
+  50%     { opacity:.6; transform:scale(1.3); }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* ── Custom scrollbar ───────────────────────────────────────── */
+::-webkit-scrollbar { width:8px; height:8px; }
+::-webkit-scrollbar-track  { background:#1c2036; }
+::-webkit-scrollbar-thumb  { background:#404a6a; border-radius:4px; }
+::-webkit-scrollbar-thumb:hover { background:#505a7a; }
+
+/* ── Password toggle ────────────────────────────────────────── */
+.password-toggle {
+  position:absolute; right:.75rem; top:50%;
+  transform:translateY(-50%);
+  background:none; border:none; cursor:pointer;
+  color:#a0a0a0; padding:0; line-height:0;
+}
+.password-toggle:hover { color:#fafafa; }
+
+/* ── Cards ──────────────────────────────────────────────────── */
+.feature-card:hover  { box-shadow:0 0 40px rgba(0,212,170,.15); transform:translateY(-2px); transition:all .3s; }
+.stat-card           { transition:box-shadow .2s,transform .2s; }
+.stat-card:hover     { box-shadow:0 4px 24px rgba(0,212,170,.10); transform:translateY(-1px); }
+
+/* ── Header scroll state ────────────────────────────────────── */
+#main-header.scrolled {
+  background-color: rgba(20,24,42,.9) !important;
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(50,58,82,.6);
+}
+
+/* ── Sidebar mobile ─────────────────────────────────────────── */
+#sidebar-overlay {
+  display:none; position:fixed; inset:0;
+  background:rgba(0,0,0,.5); z-index:30;
+}
+#sidebar-overlay.active { display:block; }
+
+@media (max-width:1023px) {
+  #dashboard-sidebar {
+    transform:translateX(-100%);
+    transition:transform .3s ease;
+  }
+  #dashboard-sidebar.open { transform:translateX(0); }
+}
+
+/* ── Backdrop blur fallback ─────────────────────────────────── */
+@supports not (backdrop-filter:blur(1px)) {
+  .backdrop-blur-lg { background-color:rgba(20,24,42,.97) !important; }
+  .backdrop-blur-xl { background-color:rgba(28,32,54,.99) !important; }
+  .backdrop-blur-sm { background-color:rgba(28,32,54,.95) !important; }
+}
+
+/* ── Table row hover ────────────────────────────────────────── */
+.table-row-hover:hover { background:rgba(37,45,66,.4); transition:background .15s; }
+
+/* ── How it works connector line ────────────────────────────── */
+.steps-connector {
+  position:absolute;
+  top:2rem; left:10%; right:10%;
+  height:2px;
+  background:linear-gradient(90deg,#00d4aa,rgba(0,212,170,.3),#00d4aa);
+}
+
+/* ── Animated counter ───────────────────────────────────────── */
+.animate-counter { display:inline-block; }
+
+/* ── Form inputs (prevent autofill styling issues) ──────────── */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+  -webkit-text-fill-color:#fafafa;
+  -webkit-box-shadow:0 0 0 1000px #252d42 inset;
+  transition:background-color 5000s ease-in-out 0s;
+}
+
+/* ── Gradient text ──────────────────────────────────────────── */
+.gradient-text {
+  background:linear-gradient(135deg,#00d4aa 0%,rgba(0,212,170,.6) 100%);
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+}
+
+/* ── Dashboard section title border ─────────────────────────── */
+.section-divider { border-color:rgba(50,58,82,.6); }
+
+/* ── Glow effects ───────────────────────────────────────────── */
+.glow-primary { box-shadow:0 0 40px rgba(0,212,170,.15); }
+.glow-accent  { box-shadow:0 0 40px rgba(224,96,48,.12); }
+
+/* Dashboard sidebar mobile state */
+@media (max-width: 1023px) {
+  #dashboard-sidebar {
+    transform: translateX(-100%);
+    transition: transform 0.3s ease;
+  }
+  #dashboard-sidebar.open {
+    transform: translateX(0);
+  }
+}
+
+/* Backdrop blur fallback for older browsers */
+@supports not (backdrop-filter: blur(1px)) {
+  .backdrop-blur-lg  { background-color: rgba(20, 24, 42, 0.97) !important; }
+  .backdrop-blur-xl  { background-color: rgba(28, 32, 54, 0.99) !important; }
+  .backdrop-blur-sm  { background-color: rgba(28, 32, 54, 0.95) !important; }
+}
+
+/* Pulse animation for badge */
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: 0.5; }
+}
+.pulse-dot { animation: pulse-dot 2s ease-in-out infinite; }
+
+/* Header scroll state */
+#main-header.scrolled {
+  background-color: rgba(20, 24, 42, 0.85);
+  backdrop-filter: blur(16px);
+  border-bottom: 1px solid rgba(50, 58, 82, 0.5);
+}
+
+/* Connecting line for how-it-works */
+.steps-connector {
+  position: absolute;
+  top: 2rem;
+  left: 10%;
+  right: 10%;
+  height: 2px;
+  background: linear-gradient(to right, #00d4aa, rgba(0,212,170,0.4), #00d4aa);
+}
+
+/* Lucide icon sizing helpers (used with data-lucide) */
+[data-lucide] { display: inline-block; vertical-align: middle; }
+
+/* Table hover */
+.table-row-hover:hover { background-color: rgba(37, 45, 66, 0.5); }
+
+/* ─── Forms: texto siempre visible ──────────────────────────
+   Garantiza visibilidad sin depender solo de clases Tailwind  */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]),
+textarea,
+select {
+  color: #fafafa;
+  background-color: #252d42;
+  caret-color: #00d4aa;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #7a849c;
+  opacity: 1;
+}
+
+/* Chrome / Edge autofill sobreescribe el fondo con color claro.
+   Sin esto: texto blanco sobre fondo claro = invisible.          */
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-text-fill-color: #fafafa !important;
+  -webkit-box-shadow: 0 0 0px 1000px #252d42 inset !important;
+  caret-color: #00d4aa;
+  transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Opciones del <select> nativo */
+select option {
+  background-color: #1c2036;
+  color: #fafafa;
+}
+
+/* Borde ligeramente más visible en inputs */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not(:focus),
+textarea:not(:focus),
+select:not(:focus) {
+  border-color: rgba(80, 92, 124, 0.6);
+}

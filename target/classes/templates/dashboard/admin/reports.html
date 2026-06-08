@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Reportes del Sistema')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <p class="text-sm text-muted-foreground mb-1">Pacientes Activos</p>
+          <p class="text-3xl font-bold text-foreground" th:text="${stats?.activePatients ?: 0}">0</p>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <p class="text-sm text-muted-foreground mb-1">Citas Hoy</p>
+          <p class="text-3xl font-bold text-foreground" th:text="${stats?.todayAppointments ?: 0}">0</p>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <p class="text-sm text-muted-foreground mb-1">Polizas por Vencer</p>
+          <p class="text-3xl font-bold text-foreground" th:text="${stats?.expiringPolicies ?: 0}">0</p>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <p class="text-sm text-muted-foreground mb-1">Tickets Abiertos</p>
+          <p class="text-3xl font-bold text-foreground" th:text="${stats?.openTickets ?: 0}">0</p>
+        </div>
+      </div>
+
+      <!-- Weekly Activity -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden" th:if="${weeklyActivity != null and !#lists.isEmpty(weeklyActivity)}">
+        <div class="p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="bar-chart" class="w-5 h-5 text-primary"></i> Actividad Semanal
+          </h3>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="border-b border-border/50">
+              <tr>
+                <th class="text-left py-3 text-muted-foreground font-medium">Dia</th>
+                <th class="text-right py-3 text-muted-foreground font-medium">Pacientes</th>
+                <th class="text-right py-3 text-muted-foreground font-medium">Citas</th>
+                <th class="text-right py-3 text-muted-foreground font-medium">Validaciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="entry : ${weeklyActivity}" class="border-b border-border/30 table-row-hover">
+                <td class="py-3 font-medium text-foreground" th:text="${entry.name}">Dia</td>
+                <td class="py-3 text-right text-muted-foreground" th:text="${entry.pacientes}">0</td>
+                <td class="py-3 text-right text-muted-foreground" th:text="${entry.citas}">0</td>
+                <td class="py-3 text-right text-muted-foreground" th:text="${entry.validaciones}">0</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Modules Usage -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden" th:if="${modulesUsage != null and !#lists.isEmpty(modulesUsage)}">
+        <div class="p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="pie-chart" class="w-5 h-5 text-primary"></i> Uso por Modulo
+          </h3>
+        </div>
+        <div class="px-6 pb-6 space-y-4">
+          <div th:each="mod : ${modulesUsage}" class="space-y-1">
+            <div class="flex items-center justify-between text-sm">
+              <span class="font-medium text-foreground" th:text="${mod.name}">Modulo</span>
+              <span class="text-muted-foreground" th:text="${mod.percentage + '%'}">0%</span>
+            </div>
+            <div class="h-2 bg-secondary rounded-full overflow-hidden">
+              <div class="h-full bg-primary rounded-full transition-all" th:style="'width:' + ${mod.percentage} + '%'"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

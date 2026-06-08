@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Auditoria del Sistema')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Table -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="clipboard-list" class="w-5 h-5 text-primary"></i> Log de Auditoria
+          </h3>
+          <span class="text-xs text-muted-foreground" th:text="${#lists.size(auditLogs)} + ' registros'">0 registros</span>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="border-b border-border/50 bg-secondary/30">
+              <tr>
+                <th class="text-left px-6 py-3 text-muted-foreground font-medium">Usuario</th>
+                <th class="text-left px-6 py-3 text-muted-foreground font-medium">Accion</th>
+                <th class="text-left px-6 py-3 text-muted-foreground font-medium">Modulo</th>
+                <th class="text-left px-6 py-3 text-muted-foreground font-medium">Fecha</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="log : ${auditLogs}" class="border-b border-border/30 table-row-hover">
+                <td class="px-6 py-3 font-medium text-foreground" th:text="${log.user}">Usuario</td>
+                <td class="px-6 py-3 text-muted-foreground" th:text="${log.action}">Accion</td>
+                <td class="px-6 py-3">
+                  <span class="px-2 py-0.5 rounded-full text-xs font-medium bg-secondary text-secondary-foreground" th:text="${log.type}">Tipo</span>
+                </td>
+                <td class="px-6 py-3 text-muted-foreground text-xs" th:text="${log.time}">Hora</td>
+              </tr>
+              <tr th:if="${auditLogs == null or #lists.isEmpty(auditLogs)}">
+                <td colspan="4" class="px-6 py-10 text-center text-muted-foreground text-sm">Sin registros de auditoria</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

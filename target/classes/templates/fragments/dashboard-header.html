@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<!--
+  FRAGMENTO: dashboard-header
+  Variables del modelo:
+    - ${pageTitle}    : Título principal del header
+    - ${pageSubtitle} : Subtítulo (opcional)
+    - ${notifCount}   : Número de notificaciones (opcional, default 0)
+-->
+<body>
+
+<header th:fragment="dashboardHeader"
+        class="sticky top-0 z-40 bg-background/80 backdrop-blur-lg border-b border-border">
+  <div class="flex items-center justify-between h-16 px-4 md:px-6">
+
+    <!-- Izquierda: botón hamburguesa (móvil) + título -->
+    <div class="flex items-center gap-4">
+      <button id="sidebar-toggle"
+              class="lg:hidden p-2 rounded-lg text-foreground hover:bg-secondary/50 transition-colors">
+        <i data-lucide="menu" class="w-5 h-5"></i>
+      </button>
+      <div>
+        <h1 class="text-lg font-semibold text-foreground"
+            th:text="${pageTitle ?: 'Dashboard'}">Dashboard</h1>
+        <p class="text-sm text-muted-foreground"
+           th:text="${pageSubtitle}"
+           th:if="${pageSubtitle != null}">Subtítulo</p>
+      </div>
+    </div>
+
+    <!-- Derecha: notificaciones -->
+    <div class="flex items-center gap-4">
+      <div class="relative">
+        <button class="p-2 rounded-lg text-foreground hover:bg-secondary/50 transition-colors relative">
+          <i data-lucide="bell" class="w-5 h-5"></i>
+          <span th:if="${(notifCount ?: 0) > 0}"
+                th:text="${notifCount}"
+                class="absolute -top-1 -right-1 w-4 h-4 bg-accent text-accent-foreground text-xs rounded-full flex items-center justify-center font-bold">0</span>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+</body>
+</html>

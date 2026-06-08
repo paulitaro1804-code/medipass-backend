@@ -1,0 +1,292 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Centro de Soporte')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- ── Stats Grid ─────────────────────────────────── -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Tickets Abiertos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.openTickets ?: '0'}">0</p>
+              <p class="text-sm text-muted-foreground mt-1"
+                 th:if="${stats != null}"
+                 th:text="${(stats.newToday ?: 0) + ' nuevos hoy'}">0 nuevos hoy</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="message-square" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">En Progreso</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.inProgress ?: '0'}">0</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-info/10 flex items-center justify-center text-info">
+              <i data-lucide="loader" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Resueltos Hoy</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.resolvedToday ?: '0'}">0</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-success/10 flex items-center justify-center text-success">
+              <i data-lucide="check-circle" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Alta Prioridad</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.highPriority ?: '0'}">0</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-destructive/10 flex items-center justify-center text-destructive">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Tickets Abiertos ──────────────────────────── -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-border/50">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="message-square" class="w-5 h-5 text-primary"></i>
+            Tickets Abiertos
+          </h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border/50">
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Paciente</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Asunto</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Tipo</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Prioridad</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Estado</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Creado</th>
+                <th class="text-right px-5 py-3 text-muted-foreground font-medium">Acción</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="ticket : ${openTickets}" class="border-b border-border/30 table-row-hover">
+                <td class="px-5 py-3 font-medium text-foreground" th:text="${ticket.patient}">—</td>
+                <td class="px-5 py-3 text-muted-foreground max-w-xs truncate" th:text="${ticket.subject}">—</td>
+                <td class="px-5 py-3 text-muted-foreground capitalize" th:text="${ticket.type}">—</td>
+                <td class="px-5 py-3">
+                  <span th:classappend="${ticket.priority == 'alta'} ? 'bg-destructive/20 text-destructive' :
+                                        (${ticket.priority == 'media'} ? 'bg-warning/20 text-warning' : 'bg-secondary text-secondary-foreground')"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                        th:text="${ticket.priority}">—</span>
+                </td>
+                <td class="px-5 py-3">
+                  <span th:classappend="${ticket.status == 'nuevo'} ? 'bg-info/20 text-info' :
+                                        (${ticket.status == 'en-proceso'} ? 'bg-warning/20 text-warning' : 'bg-secondary text-secondary-foreground')"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                        th:text="${ticket.status}">—</span>
+                </td>
+                <td class="px-5 py-3 text-muted-foreground text-xs" th:text="${ticket.created}">—</td>
+                <td class="px-5 py-3 text-right">
+                  <a th:href="@{/dashboard/support/tickets/{id}(id=${ticket.id})}"
+                     class="text-primary hover:underline text-xs font-medium">Atender</a>
+                </td>
+              </tr>
+              <tr th:if="${openTickets == null or #lists.isEmpty(openTickets)}">
+                <td colspan="7" class="px-5 py-8 text-center text-muted-foreground text-sm">
+                  <i data-lucide="inbox" class="w-8 h-8 text-muted-foreground/30 mx-auto mb-2 block"></i>
+                  No hay tickets abiertos
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- ── Resueltos Recientemente (FIXED: uses ticket.resolved not ticket.resolvedAt) ── -->
+      <div th:if="${recentResolved != null and not #lists.isEmpty(recentResolved)}"
+           class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-5 border-b border-border/50">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5 text-success"></i>
+            Resueltos Recientemente
+          </h3>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border/50">
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Paciente</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Asunto</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Satisfacción</th>
+                <th class="text-left px-5 py-3 text-muted-foreground font-medium">Resuelto</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="ticket : ${recentResolved}" class="border-b border-border/30 table-row-hover">
+                <td class="px-5 py-3 font-medium text-foreground" th:text="${ticket.patient}">—</td>
+                <td class="px-5 py-3 text-muted-foreground" th:text="${ticket.subject}">—</td>
+                <td class="px-5 py-3">
+                  <span th:if="${ticket.satisfaction != null}"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium bg-success/20 text-success"
+                        th:text="${ticket.satisfaction}">—</span>
+                  <span th:if="${ticket.satisfaction == null}"
+                        class="text-xs text-muted-foreground">Sin calificación</span>
+                </td>
+                <!-- FIXED: was ticket.resolvedAt (doesn't exist) → ticket.resolved -->
+                <td class="px-5 py-3 text-muted-foreground text-xs" th:text="${ticket.resolved}">—</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>
+
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Tickets Abiertos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.openTickets ?: '0'}">0</p>
+              <p class="text-sm text-muted-foreground mt-1" th:if="${stats != null}" th:text="${(stats.newToday ?: 0) + ' nuevos hoy'}"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="message-square" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">En Progreso</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.inProgress ?: '0'}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-info/10 flex items-center justify-center text-info">
+              <i data-lucide="loader" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Resueltos Hoy</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.resolvedToday ?: '0'}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success">
+              <i data-lucide="check-circle" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Alta Prioridad</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.highPriority ?: '0'}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center text-destructive">
+              <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tickets Abiertos -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="message-square" class="w-5 h-5 text-primary"></i>
+            Tickets Abiertos
+          </h3>
+          <a th:href="@{/dashboard/support/tickets}" class="text-sm text-primary hover:underline">Ver todos</a>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border/50">
+                <th class="text-left py-3 text-muted-foreground font-medium">ID</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Paciente</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Asunto</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Tipo</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Prioridad</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Estado</th>
+                <th class="text-right py-3 text-muted-foreground font-medium">Accion</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="ticket : ${openTickets}" class="border-b border-border/30 table-row-hover">
+                <td class="py-3 font-mono text-xs text-muted-foreground" th:text="${ticket.id}">ID</td>
+                <td class="py-3 font-medium text-foreground" th:text="${ticket.patient}">Paciente</td>
+                <td class="py-3 text-muted-foreground" th:text="${ticket.subject}">Asunto</td>
+                <td class="py-3 text-muted-foreground" th:text="${ticket.type}">Tipo</td>
+                <td class="py-3">
+                  <span th:classappend="${ticket.priority == 'alta'} ? 'bg-destructive/20 text-destructive' : (${ticket.priority == 'media'} ? 'bg-warning/20 text-warning' : 'bg-secondary text-secondary-foreground')"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                        th:text="${ticket.priority}">Media</span>
+                </td>
+                <td class="py-3">
+                  <span th:classappend="${ticket.status == 'nuevo'} ? 'bg-info/20 text-info' : (${ticket.status == 'en-proceso'} ? 'bg-warning/20 text-warning' : 'bg-secondary text-secondary-foreground')"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium"
+                        th:text="${ticket.status}">nuevo</span>
+                </td>
+                <td class="py-3 text-right">
+                  <a th:href="@{/dashboard/support/tickets/{id}(id=${ticket.id})}" class="text-primary hover:underline text-xs">Atender</a>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(openTickets)}">
+                <td colspan="7" class="py-6 text-center text-muted-foreground text-sm">No hay tickets abiertos</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Resueltos Recientemente -->
+      <div th:if="${not #lists.isEmpty(recentResolved)}" class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="check-circle" class="w-5 h-5 text-success"></i> Resueltos Recientemente
+          </h3>
+          <a th:href="@{/dashboard/support/resolved}" class="text-sm text-primary hover:underline">Ver todos</a>
+        </div>
+        <div class="px-6 pb-6 space-y-3">
+          <div th:each="ticket : ${recentResolved}" class="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+            <div>
+              <p class="font-medium text-foreground" th:text="${ticket.patient}">Paciente</p>
+              <p class="text-sm text-muted-foreground" th:text="${ticket.subject}">Asunto</p>
+            </div>
+            <span class="text-xs text-success" th:text="${ticket.resolvedAt}">Hora</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

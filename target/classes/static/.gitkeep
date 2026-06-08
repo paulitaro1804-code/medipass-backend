@@ -1,0 +1,3 @@
+# Esta carpeta es generada automáticamente por "pnpm build" dentro de frontend/
+# Ejecuta: mvn package -Pwith-frontend  (o -Dskip.frontend=false)
+# para regenerar el contenido estático del frontend.

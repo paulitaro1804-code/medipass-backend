@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Validador - Cola de Validacion')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Pendientes</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.pendingRequests ?: '0'}">0</p>
+              <p class="text-sm text-muted-foreground mt-1" th:if="${stats != null}" th:text="${(stats.newToday ?: 0) + ' nuevas hoy'}"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Aprobadas Hoy</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.approvedToday ?: '0'}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success">
+              <i data-lucide="check-circle" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Rechazadas</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.rejectedToday ?: '0'}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-destructive/10 flex items-center justify-center text-destructive">
+              <i data-lucide="x-circle" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Por Vencer</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.expiringPolicies ?: '0'}">0</p>
+              <p class="text-sm text-muted-foreground mt-1" th:if="${stats != null}" th:text="'Proximos ' + ${stats.expiringDays ?: 30} + ' dias'"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+              <i data-lucide="alert-triangle" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Solicitudes Pendientes -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="clipboard-list" class="w-5 h-5 text-primary"></i>
+            Solicitudes Pendientes de Validacion
+          </h3>
+        </div>
+        <div class="px-6 pb-6 space-y-4">
+          <div th:each="req : ${pendingRequests}"
+               class="flex flex-col lg:flex-row lg:items-center justify-between p-4 rounded-lg bg-secondary/30 hover:bg-secondary/50 transition-colors gap-4">
+            <div class="flex items-start gap-4">
+              <div class="w-12 h-12 rounded-lg bg-primary/20 flex items-center justify-center flex-shrink-0">
+                <i data-lucide="file-text" class="w-6 h-6 text-primary"></i>
+              </div>
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <p class="font-medium text-foreground" th:text="${req.patient}">Paciente</p>
+                  <span th:if="${req.status == 'mora'}" class="px-2 py-0.5 rounded-full bg-warning/20 text-warning text-xs font-medium">Mora detectada</span>
+                  <span th:if="${req.status == 'reviewing'}" class="px-2 py-0.5 rounded-full bg-info/20 text-info text-xs font-medium">En revision</span>
+                  <span th:if="${req.status == 'pending'}" class="px-2 py-0.5 rounded-full bg-secondary text-secondary-foreground text-xs font-medium">Pendiente</span>
+                </div>
+                <div class="flex flex-wrap gap-x-4 gap-y-1 text-sm text-muted-foreground">
+                  <span th:text="'Doc: ' + ${req.document}">Doc: 123</span>
+                  <span th:text="'Poliza: ' + ${req.policy}">Poliza</span>
+                  <span th:text="'Aseguradora: ' + ${req.insurer}">Aseguradora</span>
+                  <span th:text="'Plan: ' + ${req.plan}">Plan</span>
+                </div>
+                <p class="text-xs text-muted-foreground" th:text="${req.submitted}">Fecha envio</p>
+              </div>
+            </div>
+            <div class="flex gap-2 flex-shrink-0 flex-wrap">
+              <a th:href="@{/dashboard/validator/request/{id}(id=${req.id})}"
+                 class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm text-foreground hover:bg-secondary/50 transition-colors border border-border">
+                <i data-lucide="eye" class="w-4 h-4"></i> Ver
+              </a>
+              <form th:action="@{/dashboard/validator/approve/{id}(id=${req.id})}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm text-success hover:bg-success/10 transition-colors border border-success/30">
+                  <i data-lucide="check" class="w-4 h-4"></i> Aprobar
+                </button>
+              </form>
+              <form th:action="@{/dashboard/validator/reject/{id}(id=${req.id})}" method="post" class="inline">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                <button type="submit" class="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm text-destructive hover:bg-destructive/10 transition-colors border border-destructive/30">
+                  <i data-lucide="x" class="w-4 h-4"></i> Rechazar
+                </button>
+              </form>
+            </div>
+          </div>
+          <p th:if="${#lists.isEmpty(pendingRequests)}" class="text-center text-muted-foreground text-sm py-8">No hay solicitudes pendientes</p>
+        </div>
+      </div>
+
+      <!-- Alertas de Vencimiento -->
+      <div th:if="${not #lists.isEmpty(expiringPolicies)}" class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="alert-triangle" class="w-5 h-5 text-warning"></i>
+            Alertas de Vencimiento
+          </h3>
+        </div>
+        <div class="px-6 pb-6 overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="border-b border-border/50">
+                <th class="text-left py-3 text-muted-foreground font-medium">Paciente</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Poliza</th>
+                <th class="text-left py-3 text-muted-foreground font-medium">Vencimiento</th>
+                <th class="text-right py-3 text-muted-foreground font-medium">Dias restantes</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="pol : ${expiringPolicies}" class="border-b border-border/30 table-row-hover">
+                <td class="py-3 font-medium text-foreground" th:text="${pol.patient}">Paciente</td>
+                <td class="py-3 text-muted-foreground" th:text="${pol.policy}">Poliza</td>
+                <td class="py-3 text-muted-foreground" th:text="${pol.expiryDate}">Fecha</td>
+                <td class="py-3 text-right">
+                  <span th:classappend="${pol.daysLeft != null and pol.daysLeft lt 7} ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning'"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium"
+                        th:text="${pol.daysLeft + ' dias'}">dias</span>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

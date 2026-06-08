@@ -1,0 +1,112 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Portal del Paciente')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Proxima Cita</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.nextAppointmentDate ?: 'Sin cita'}">Sin cita</p>
+              <p class="text-sm text-muted-foreground mt-1" th:if="${stats != null and stats.nextAppointmentTime != null}" th:text="${stats.nextAppointmentTime + ' - ' + (stats.nextAppointmentDoctor ?: 'Sin asignar')}"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <i data-lucide="calendar" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Resultados Nuevos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.newLabResults ?: 0}">0</p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-info/10 flex items-center justify-center text-info">
+              <i data-lucide="microscope" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Estado Poliza</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.policyStatus ?: 'Activa'}">Activa</p>
+              <p class="text-sm text-muted-foreground mt-1" th:text="${stats?.policyPlan ?: 'Plan principal'}"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success">
+              <i data-lucide="shield" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-6">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Dias Poliza</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats != null ? stats.policyDaysLeft : '—'}">—</p>
+              <p class="text-sm text-muted-foreground mt-1" th:text="${stats?.policyExpiryDate ?: 'Sin fecha registrada'}"></p>
+            </div>
+            <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="clock" class="w-6 h-6"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Proximas Citas + Resultados Lab -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-6 pb-4">
+            <h3 class="text-foreground font-semibold flex items-center gap-2">
+              <i data-lucide="calendar" class="w-5 h-5 text-primary"></i> Proximas Citas
+            </h3>
+            <a th:href="@{/dashboard/patient/appointments}" class="text-sm text-primary hover:underline">Ver todas</a>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div th:each="apt : ${appointments}" class="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+              <div>
+                <p class="font-medium text-foreground" th:text="${apt.doctor}">Dr. Medico</p>
+                <p class="text-sm text-muted-foreground" th:text="${apt.specialty}">Especialidad</p>
+              </div>
+              <div class="text-right">
+                <p class="font-medium text-foreground" th:text="${apt.date}">Fecha</p>
+                <p class="text-sm text-muted-foreground" th:text="${apt.time}">Hora</p>
+              </div>
+            </div>
+            <p th:if="${#lists.isEmpty(appointments)}" class="text-center text-muted-foreground text-sm py-4">No hay citas programadas</p>
+          </div>
+        </div>
+
+        <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+          <div class="flex items-center justify-between p-6 pb-4">
+            <h3 class="text-foreground font-semibold flex items-center gap-2">
+              <i data-lucide="microscope" class="w-5 h-5 text-primary"></i> Resultados de Laboratorio
+            </h3>
+            <a th:href="@{/dashboard/patient/lab-results}" class="text-sm text-primary hover:underline">Ver todos</a>
+          </div>
+          <div class="px-6 pb-6 space-y-3">
+            <div th:each="result : ${labResults}" class="flex items-center justify-between p-4 rounded-lg bg-secondary/30">
+              <div>
+                <p class="font-medium text-foreground" th:text="${result.name}">Examen</p>
+                <p class="text-sm text-muted-foreground" th:text="${result.date}">Fecha</p>
+              </div>
+              <span class="text-primary text-sm font-medium" th:text="${result.status}">Disponible</span>
+            </div>
+            <p th:if="${#lists.isEmpty(labResults)}" class="text-center text-muted-foreground text-sm py-4">No hay resultados disponibles</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

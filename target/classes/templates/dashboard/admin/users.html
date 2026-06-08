@@ -1,0 +1,103 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Gestion de Usuarios')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Flash Messages -->
+      <div th:if="${successMessage}" class="p-4 rounded-lg bg-success/10 border border-success/30 text-success text-sm" th:text="${successMessage}"></div>
+      <div th:if="${errorMessage}" class="p-4 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm" th:text="${errorMessage}"></div>
+
+      <!-- Header Row -->
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h2 class="text-xl font-bold text-foreground">Usuarios del Sistema</h2>
+          <p class="text-sm text-muted-foreground" th:text="${#lists.size(users)} + ' usuarios registrados'">0 usuarios registrados</p>
+        </div>
+        <a th:href="@{/dashboard/admin/users/new}"
+           class="inline-flex items-center gap-2 px-4 py-2 rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition-colors font-medium text-sm">
+          <i data-lucide="plus" class="w-4 h-4"></i> Nuevo Usuario
+        </a>
+      </div>
+
+      <!-- Users Table -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead class="border-b border-border/50 bg-secondary/30">
+              <tr>
+                <th class="text-left px-6 py-4 text-muted-foreground font-medium">Nombre</th>
+                <th class="text-left px-6 py-4 text-muted-foreground font-medium">Email</th>
+                <th class="text-left px-6 py-4 text-muted-foreground font-medium">Rol</th>
+                <th class="text-left px-6 py-4 text-muted-foreground font-medium">Estado</th>
+                <th class="text-left px-6 py-4 text-muted-foreground font-medium">Registro</th>
+                <th class="text-right px-6 py-4 text-muted-foreground font-medium">Acciones</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="user : ${users}" class="border-b border-border/30 table-row-hover">
+                <td class="px-6 py-4">
+                  <div class="flex items-center gap-3">
+                    <div class="w-9 h-9 rounded-full bg-primary/20 flex items-center justify-center text-primary text-sm font-semibold flex-shrink-0"
+                         th:text="${#strings.isEmpty(user.name) ? 'U' : #strings.substring(user.name, 0, 1)}">U</div>
+                    <span class="font-medium text-foreground" th:text="${user.name}">Nombre</span>
+                  </div>
+                </td>
+                <td class="px-6 py-4 text-muted-foreground" th:text="${user.email}">email</td>
+                <td class="px-6 py-4">
+                  <span th:classappend="${user.role == 'admin'} ? 'bg-accent/20 text-accent' : (${user.role == 'doctor'} ? 'bg-primary/20 text-primary' : (${user.role == 'patient'} ? 'bg-info/20 text-info' : (${user.role == 'coordinator'} ? 'bg-success/20 text-success' : 'bg-secondary text-secondary-foreground')))"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium uppercase" th:text="${user.role}">ROL</span>
+                </td>
+                <td class="px-6 py-4">
+                  <span th:classappend="${user.status == 'activo'} ? 'bg-success/20 text-success' : (${user.status == 'suspendido'} ? 'bg-destructive/20 text-destructive' : 'bg-warning/20 text-warning')"
+                        class="px-2 py-0.5 rounded-full text-xs font-medium uppercase" th:text="${user.status}">ACTIVO</span>
+                </td>
+                <td class="px-6 py-4 text-muted-foreground text-xs" th:text="${user.createdAt}">Fecha</td>
+                <td class="px-6 py-4 text-right">
+                  <div class="flex items-center justify-end gap-2">
+                    <!-- Edit -->
+                    <a th:href="@{/dashboard/admin/users/{id}/edit(id=${user.id})}"
+                       class="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-primary transition-colors" title="Editar">
+                      <i data-lucide="pencil" class="w-4 h-4"></i>
+                    </a>
+                    <!-- Toggle status -->
+                    <form th:action="@{/dashboard/admin/users/{id}/toggle(id=${user.id})}" method="post" class="inline">
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <button type="submit"
+                              th:title="${user.status == 'activo'} ? 'Suspender' : 'Activar'"
+                              class="p-1.5 rounded-lg hover:bg-secondary text-muted-foreground hover:text-warning transition-colors">
+                        <i th:if="${user.status == 'activo'}" data-lucide="pause-circle" class="w-4 h-4"></i>
+                        <i th:unless="${user.status == 'activo'}" data-lucide="play-circle" class="w-4 h-4"></i>
+                      </button>
+                    </form>
+                    <!-- Delete -->
+                    <form th:action="@{/dashboard/admin/users/{id}/delete(id=${user.id})}" method="post" class="inline"
+                          onsubmit="return confirm('¿Eliminar este usuario? Esta acción no se puede deshacer.')">
+                      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                      <button type="submit" title="Eliminar"
+                              class="p-1.5 rounded-lg hover:bg-destructive/10 text-muted-foreground hover:text-destructive transition-colors">
+                        <i data-lucide="trash-2" class="w-4 h-4"></i>
+                      </button>
+                    </form>
+                  </div>
+                </td>
+              </tr>
+              <tr th:if="${#lists.isEmpty(users)}">
+                <td colspan="6" class="px-6 py-10 text-center text-muted-foreground text-sm">No hay usuarios registrados</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>
