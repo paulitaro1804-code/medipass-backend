@@ -1,5 +1,14 @@
-FROM openjdk:21
+﻿# Stage 1 -- compile & package
+FROM maven:3.9.9-eclipse-temurin-21-alpine AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn clean package -DskipTests -B
 
-COPY "./target/medipass-backend-1.0.0.jar" "app.jar"
+# Stage 2 -- lightweight runtime image
+FROM eclipse-temurin:21-jre-alpine
+WORKDIR /app
+COPY --from=build /app/target/*.jar app.jar
 EXPOSE 8218
 ENTRYPOINT ["java", "-jar", "app.jar"]
