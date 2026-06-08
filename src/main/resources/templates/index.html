@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head th:replace="~{fragments/head :: head(null)}"></head>
+
+<body class="font-sans bg-background text-foreground antialiased">
+
+<!-- ═══════════════════════════════════════════════════════════
+     HEADER / NAVEGACIÓN
+═══════════════════════════════════════════════════════════ -->
+<header id="main-header"
+        class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+  <div class="container mx-auto px-4 md:px-6">
+    <nav class="flex items-center justify-between h-16 md:h-20">
+
+      <!-- Logo -->
+      <a th:href="@{/}" class="flex items-center gap-2">
+        <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg">
+          <span class="text-primary-foreground font-bold text-lg">M</span>
+        </div>
+        <span class="font-bold text-xl text-foreground">MEDIPASS</span>
+      </a>
+
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8">
+        <a href="#servicios"    class="text-muted-foreground hover:text-foreground transition-colors text-sm">Servicios</a>
+        <a href="#beneficios"   class="text-muted-foreground hover:text-foreground transition-colors text-sm">Beneficios</a>
+        <a href="#como-funciona" class="text-muted-foreground hover:text-foreground transition-colors text-sm">Cómo Funciona</a>
+        <a href="#contacto"     class="text-muted-foreground hover:text-foreground transition-colors text-sm">Contacto</a>
+      </div>
+
+      <!-- CTA Buttons -->
+      <div class="hidden md:flex items-center gap-3">
+        <a th:href="@{/login}"
+           class="px-4 py-2 text-sm text-foreground hover:text-primary transition-colors">
+          Iniciar Sesión
+        </a>
+        <a th:href="@{/register}"
+           class="px-5 py-2 rounded-lg bg-primary text-primary-foreground text-sm font-medium hover:bg-primary/90 transition-colors">
+          Comenzar Ahora
+        </a>
+      </div>
+
+      <!-- Mobile menu button -->
+      <button id="mobile-menu-btn" class="md:hidden p-2 text-foreground" aria-label="Abrir menú">
+        <i id="menu-icon"  data-lucide="menu"  class="w-6 h-6"></i>
+        <i id="close-icon" data-lucide="x"     class="w-6 h-6 hidden"></i>
+      </button>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden py-4 border-t border-border/50 bg-background/95 backdrop-blur-lg">
+      <div class="flex flex-col gap-4">
+        <a href="#servicios"     class="text-muted-foreground hover:text-foreground py-2 text-sm">Servicios</a>
+        <a href="#beneficios"    class="text-muted-foreground hover:text-foreground py-2 text-sm">Beneficios</a>
+        <a href="#como-funciona" class="text-muted-foreground hover:text-foreground py-2 text-sm">Cómo Funciona</a>
+        <a href="#contacto"      class="text-muted-foreground hover:text-foreground py-2 text-sm">Contacto</a>
+        <div class="flex flex-col gap-2 pt-2 border-t border-border/50">
+          <a th:href="@{/login}"    class="px-4 py-2.5 rounded-lg border border-border/50 text-foreground text-sm text-center">Iniciar Sesión</a>
+          <a th:href="@{/register}" class="px-4 py-2.5 rounded-lg bg-primary text-primary-foreground text-sm font-medium text-center">Comenzar Ahora</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HERO SECTION
+═══════════════════════════════════════════════════════════ -->
+<section class="relative min-h-screen flex items-center pt-20 overflow-hidden animated-gradient">
+  <!-- Gradient orbs -->
+  <div class="absolute top-1/4 left-0 w-[500px] h-[500px] bg-primary/10 rounded-full blur-[120px] pointer-events-none animate-pulse"></div>
+  <div class="absolute bottom-1/4 right-0 w-[400px] h-[400px] bg-accent/10 rounded-full blur-[100px] pointer-events-none animate-pulse"></div>
+
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="grid lg:grid-cols-2 gap-12 items-center">
+
+      <!-- Text Content -->
+      <div class="text-center lg:text-left">
+        <!-- Badge -->
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-primary/10 border border-primary/20 mb-6">
+          <span class="w-2 h-2 rounded-full bg-primary pulse-dot"></span>
+          <span class="text-sm text-primary font-medium">Plataforma HealthTech Premium</span>
+        </div>
+
+        <!-- Title -->
+        <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-foreground leading-tight mb-6">
+          Gestión Médica
+          <span class="gradient-text">Prioritaria</span>
+          para Asegurados
+        </h1>
+
+        <!-- Description -->
+        <p class="text-lg md:text-xl text-muted-foreground max-w-xl mx-auto lg:mx-0 mb-8 leading-relaxed">
+          Automatiza la validación de tu póliza, gestiona citas médicas y accede a tu historial clínico digital desde una única plataforma.
+        </p>
+
+        <!-- CTA Buttons -->
+        <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start mb-12">
+          <a th:href="@{/register}"
+             class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+            Solicitar Acceso
+            <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+          <a href="#como-funciona"
+             class="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-lg border border-border text-foreground font-medium text-base hover:bg-secondary transition-colors">
+            Ver Demo
+          </a>
+        </div>
+
+        <!-- Trust badges -->
+        <div class="flex flex-col sm:flex-row gap-6 justify-center lg:justify-start">
+          <div class="flex items-center gap-2 text-muted-foreground">
+            <i data-lucide="shield" class="w-5 h-5 text-primary"></i>
+            <span class="text-sm">Validación en tiempo real</span>
+          </div>
+          <div class="flex items-center gap-2 text-muted-foreground">
+            <i data-lucide="clock" class="w-5 h-5 text-primary"></i>
+            <span class="text-sm">Respuesta en 2 segundos</span>
+          </div>
+          <div class="flex items-center gap-2 text-muted-foreground">
+            <i data-lucide="file-check" class="w-5 h-5 text-primary"></i>
+            <span class="text-sm">Historial digital seguro</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Hero Visual (CSS 3D medical box) -->
+      <div class="relative flex items-center justify-center">
+        <div class="relative w-72 h-72 md:w-80 md:h-80 hero-float">
+          <!-- Main box -->
+          <div class="absolute inset-0 rounded-3xl bg-gradient-to-br from-card to-secondary/80 border border-border/50 shadow-2xl shadow-primary/10 flex items-center justify-center">
+            <div class="relative w-36 h-36">
+              <!-- Cross symbol -->
+              <div class="absolute inset-x-1/3 top-0 bottom-0 bg-primary/20 rounded-full border border-primary/30"></div>
+              <div class="absolute inset-y-1/3 left-0 right-0 bg-primary/20 rounded-full border border-primary/30"></div>
+              <div class="absolute inset-x-1/3 top-0 bottom-0 flex items-center justify-center">
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/30">
+                  <i data-lucide="heart-pulse" class="w-8 h-8 text-primary-foreground"></i>
+                </div>
+              </div>
+            </div>
+          </div>
+          <!-- Glow ring -->
+          <div class="absolute -inset-4 rounded-[2rem] bg-primary/5 blur-xl"></div>
+        </div>
+
+        <!-- Floating card: Póliza -->
+        <div class="absolute top-6 -left-4 md:-left-8 bg-card/90 backdrop-blur-sm border border-border/50 rounded-xl px-4 py-3 shadow-xl">
+          <p class="text-xs text-muted-foreground">Póliza verificada</p>
+          <p class="text-sm font-bold text-primary">100% Activa</p>
+        </div>
+
+        <!-- Floating card: Próxima cita -->
+        <div class="absolute bottom-6 -right-4 md:-right-8 bg-card/90 backdrop-blur-sm border border-border/50 rounded-xl px-4 py-3 shadow-xl">
+          <p class="text-xs text-muted-foreground">Próxima cita</p>
+          <p class="text-sm font-bold text-foreground">Mañana, 10:00 AM</p>
+        </div>
+
+        <!-- Floating badge: resultados -->
+        <div class="absolute -top-2 right-4 bg-accent text-accent-foreground px-3 py-1.5 rounded-lg shadow-lg text-xs font-semibold animate-pulse">
+          3 nuevos resultados
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FEATURES SECTION
+═══════════════════════════════════════════════════════════ -->
+<section id="servicios" class="py-20 md:py-32 relative bg-background">
+  <div class="absolute top-1/2 left-1/4 w-[300px] h-[300px] bg-primary/5 rounded-full blur-[100px] pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 md:px-6">
+    <!-- Section header -->
+    <div class="text-center mb-16">
+      <span class="inline-block text-primary text-sm font-semibold tracking-wider uppercase mb-4">Servicios</span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+        Todo lo que necesitas para gestionar tu salud
+      </h2>
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        Una plataforma completa que centraliza la experiencia del asegurado mediante automatización y tecnología de vanguardia.
+      </p>
+    </div>
+
+    <!-- Features grid -->
+    <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+          <i data-lucide="shield" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Validación de Pólizas</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Verificación automática de vigencia y estado de pago en tiempo real. Alertas 30, 15 y 7 días antes del vencimiento.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-info/10 flex items-center justify-center text-info mb-4">
+          <i data-lucide="calendar" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Gestión de Citas</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Solicita, reprograma o cancela citas médicas. Confirmación instantánea con código único.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-4">
+          <i data-lucide="file-text" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Historial Clínico Digital</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Accede a tu historial médico completo: diagnósticos, tratamientos, recetas y evolución clínica.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-success/10 flex items-center justify-center text-success mb-4">
+          <i data-lucide="microscope" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Resultados de Laboratorio</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Notificaciones automáticas cuando tus resultados estén listos. Alertas de valores críticos al médico.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-warning/10 flex items-center justify-center text-warning mb-4">
+          <i data-lucide="bell" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Alertas Inteligentes</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Notificaciones personalizadas para citas, vencimientos de póliza y resultados médicos.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-primary/10 flex items-center justify-center text-primary mb-4">
+          <i data-lucide="heart-pulse" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Atención Prioritaria</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Lista de espera ordenada por urgencia y tipo de póliza. Acceso preferencial a especialistas.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-info/10 flex items-center justify-center text-info mb-4">
+          <i data-lucide="clipboard-list" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Recetas Digitales</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Recetas médicas electrónicas descargables en PDF con medicamento, dosis y recomendaciones.</p>
+      </div>
+
+      <div class="feature-card bg-card rounded-xl border border-border/50 p-6 cursor-default">
+        <div class="w-12 h-12 rounded-lg bg-accent/10 flex items-center justify-center text-accent mb-4">
+          <i data-lucide="users" class="w-6 h-6"></i>
+        </div>
+        <h3 class="font-semibold text-foreground mb-2">Soporte 24/7</h3>
+        <p class="text-sm text-muted-foreground leading-relaxed">Centro de ayuda con gestión de PQRS y tickets. Atención preferencial para asegurados premium.</p>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     HOW IT WORKS SECTION
+═══════════════════════════════════════════════════════════ -->
+<section id="como-funciona" class="py-20 md:py-32 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-b from-transparent via-secondary/20 to-transparent pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 md:px-6 relative">
+    <!-- Section header -->
+    <div class="text-center mb-16 md:mb-24">
+      <span class="inline-block text-primary text-sm font-semibold tracking-wider uppercase mb-4">Proceso</span>
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+        ¿Cómo funciona MEDIPASS?
+      </h2>
+      <p class="text-muted-foreground text-lg max-w-2xl mx-auto">
+        En solo 4 pasos tendrás acceso a la gestión médica más avanzada de Colombia
+      </p>
+    </div>
+
+    <!-- Steps -->
+    <div class="relative">
+      <!-- Connecting line (desktop) -->
+      <div class="hidden lg:block steps-connector"></div>
+
+      <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-6">
+
+        <div class="relative text-center">
+          <div class="relative z-10 w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+            <span class="text-primary-foreground font-bold text-xl">01</span>
+          </div>
+          <h3 class="text-lg font-semibold text-foreground mb-3">Registra tu Póliza</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed">Ingresa tu número de póliza y datos personales. Tu solicitud entrará en cola de validación automática.</p>
+          <!-- Arrow for mobile -->
+          <div class="lg:hidden flex justify-center mt-6">
+            <i data-lucide="arrow-down" class="w-5 h-5 text-primary/50"></i>
+          </div>
+        </div>
+
+        <div class="relative text-center">
+          <div class="relative z-10 w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+            <span class="text-primary-foreground font-bold text-xl">02</span>
+          </div>
+          <h3 class="text-lg font-semibold text-foreground mb-3">Validación Automática</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed">Nuestro sistema verifica vigencia, estado de pago y beneficios de tu póliza en tiempo real.</p>
+          <div class="lg:hidden flex justify-center mt-6">
+            <i data-lucide="arrow-down" class="w-5 h-5 text-primary/50"></i>
+          </div>
+        </div>
+
+        <div class="relative text-center">
+          <div class="relative z-10 w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+            <span class="text-primary-foreground font-bold text-xl">03</span>
+          </div>
+          <h3 class="text-lg font-semibold text-foreground mb-3">Activa tu Cuenta</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed">Una vez aprobada, recibirás confirmación y acceso completo a todos los servicios de MEDIPASS.</p>
+          <div class="lg:hidden flex justify-center mt-6">
+            <i data-lucide="arrow-down" class="w-5 h-5 text-primary/50"></i>
+          </div>
+        </div>
+
+        <div class="relative text-center">
+          <div class="relative z-10 w-16 h-16 mx-auto mb-6 rounded-full bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center shadow-lg shadow-primary/20">
+            <span class="text-primary-foreground font-bold text-xl">04</span>
+          </div>
+          <h3 class="text-lg font-semibold text-foreground mb-3">Gestiona tu Salud</h3>
+          <p class="text-muted-foreground text-sm leading-relaxed">Solicita citas, accede a tu historial clínico, descarga resultados y mucho más desde tu portal.</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     BENEFITS SECTION
+═══════════════════════════════════════════════════════════ -->
+<section id="beneficios" class="py-20 md:py-32 relative bg-background">
+  <div class="absolute top-0 right-0 w-[400px] h-[400px] bg-accent/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 md:px-6">
+    <div class="grid lg:grid-cols-2 gap-12 lg:gap-20 items-center">
+
+      <!-- Content -->
+      <div>
+        <span class="inline-block text-primary text-sm font-semibold tracking-wider uppercase mb-4">Beneficios</span>
+        <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+          La experiencia de salud que mereces
+        </h2>
+        <p class="text-muted-foreground text-lg mb-10">
+          MEDIPASS centraliza todos los aspectos de tu atención médica en una plataforma diseñada para brindarte la mejor experiencia.
+        </p>
+        <ul class="space-y-4">
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Validación automática de pólizas en tiempo real</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Historial clínico unificado y accesible 24/7</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Resultados de laboratorio con alertas de valores críticos</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Gestión de citas con confirmación instantánea</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Recetas médicas digitales descargables en PDF</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <div class="mt-1 w-5 h-5 rounded-full bg-primary/20 flex items-center justify-center flex-shrink-0">
+              <i data-lucide="check" class="w-3 h-3 text-primary"></i>
+            </div>
+            <span class="text-foreground">Soporte preferencial para asegurados premium</span>
+          </li>
+        </ul>
+      </div>
+
+      <!-- Dashboard mockup visual -->
+      <div class="relative">
+        <div class="relative bg-card rounded-2xl border border-border/50 p-6 shadow-2xl shadow-primary/5 glow-primary">
+          <!-- Mock header -->
+          <div class="flex items-center justify-between mb-6">
+            <div>
+              <p class="text-xs text-muted-foreground">Bienvenida</p>
+              <p class="text-base font-semibold text-foreground">María García</p>
+            </div>
+            <div class="w-10 h-10 rounded-full bg-gradient-to-br from-primary to-primary/60"></div>
+          </div>
+          <!-- Policy status -->
+          <div class="bg-secondary/50 rounded-xl p-4 mb-4">
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-muted-foreground">Estado de Póliza</span>
+              <span class="px-2 py-0.5 rounded-full bg-primary/20 text-primary text-xs font-medium">Activa</span>
+            </div>
+            <p class="text-foreground font-medium">Plan Premium Plus</p>
+            <p class="text-sm text-muted-foreground">Vence en 89 días</p>
+          </div>
+          <!-- Quick actions -->
+          <div class="grid grid-cols-3 gap-3 mb-4">
+            <div class="bg-secondary/30 rounded-lg p-3 text-center hover:bg-secondary/50 transition-colors">
+              <p class="text-sm text-foreground">Citas</p>
+            </div>
+            <div class="bg-secondary/30 rounded-lg p-3 text-center hover:bg-secondary/50 transition-colors">
+              <p class="text-sm text-foreground">Historial</p>
+            </div>
+            <div class="bg-secondary/30 rounded-lg p-3 text-center hover:bg-secondary/50 transition-colors">
+              <p class="text-sm text-foreground">Resultados</p>
+            </div>
+          </div>
+          <!-- Upcoming appointment -->
+          <div class="border border-border/50 rounded-xl p-4">
+            <p class="text-sm text-muted-foreground mb-2">Próxima cita</p>
+            <div class="flex items-center justify-between">
+              <div>
+                <p class="text-foreground font-medium">Dr. Carlos Rodríguez</p>
+                <p class="text-sm text-muted-foreground">Medicina General</p>
+              </div>
+              <div class="text-right">
+                <p class="text-primary font-medium">Mañana</p>
+                <p class="text-sm text-muted-foreground">10:00 AM</p>
+              </div>
+            </div>
+          </div>
+          <!-- Floating notification -->
+          <div class="absolute -top-3 -right-3 bg-accent text-accent-foreground px-3 py-1.5 rounded-lg shadow-lg text-xs font-semibold animate-pulse">
+            3 nuevos resultados
+          </div>
+        </div>
+        <div class="absolute -z-10 -bottom-4 -right-4 w-full h-full bg-gradient-to-br from-primary/10 to-transparent rounded-2xl"></div>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="mt-20 border-t border-border/50 pt-16">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-12">
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-bold text-primary mb-2">
+            <span class="animate-counter" data-target="99" data-suffix="%">99%</span>
+          </div>
+          <p class="text-muted-foreground text-sm">Validación automática</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-bold text-primary mb-2">
+            <span class="animate-counter" data-target="50000" data-suffix="+">50,000+</span>
+          </div>
+          <p class="text-muted-foreground text-sm">Pacientes activos</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-bold text-primary mb-2">
+            24<span class="text-accent">/7</span>
+          </div>
+          <p class="text-muted-foreground text-sm">Soporte disponible</p>
+        </div>
+        <div class="text-center">
+          <div class="text-4xl md:text-5xl font-bold text-primary mb-2">
+            2<span class="text-accent">s</span>
+          </div>
+          <p class="text-muted-foreground text-sm">Tiempo de respuesta</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     CTA SECTION
+═══════════════════════════════════════════════════════════ -->
+<section id="contacto" class="py-20 md:py-32 relative overflow-hidden">
+  <div class="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/5 pointer-events-none"></div>
+
+  <div class="container mx-auto px-4 md:px-6 relative">
+    <div class="max-w-4xl mx-auto text-center">
+      <!-- Badge -->
+      <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-accent/10 border border-accent/20 mb-8">
+        <i data-lucide="sparkles" class="w-4 h-4 text-accent"></i>
+        <span class="text-sm text-accent font-medium">Únete a más de 50,000 asegurados</span>
+      </div>
+
+      <h2 class="text-3xl md:text-4xl lg:text-5xl font-bold text-foreground mb-6">
+        Transforma tu experiencia de salud hoy
+      </h2>
+      <p class="text-muted-foreground text-lg md:text-xl max-w-2xl mx-auto mb-10">
+        Regístrate con tu póliza y obtén acceso inmediato a validación automática, gestión de citas y tu historial clínico digital.
+      </p>
+
+      <!-- CTA buttons -->
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a th:href="@{/register}"
+           class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg bg-primary text-primary-foreground font-semibold text-base hover:bg-primary/90 transition-all shadow-lg shadow-primary/20">
+          Comenzar Ahora
+          <i data-lucide="arrow-right" class="w-4 h-4"></i>
+        </a>
+        <a href="#contacto"
+           class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-lg border border-border text-foreground font-medium text-base hover:bg-secondary transition-colors">
+          Contactar Soporte
+        </a>
+      </div>
+
+      <!-- Trust indicators -->
+      <div class="mt-12 flex flex-wrap justify-center gap-8 text-muted-foreground text-sm">
+        <div class="flex items-center gap-2">
+          <i data-lucide="shield-check" class="w-5 h-5 text-primary"></i>
+          Datos protegidos
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="star" class="w-5 h-5 text-primary"></i>
+          4.9/5 satisfacción
+        </div>
+        <div class="flex items-center gap-2">
+          <i data-lucide="badge-check" class="w-5 h-5 text-primary"></i>
+          Certificado ISO 27001
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════════════════════════════════════════
+     FOOTER
+═══════════════════════════════════════════════════════════ -->
+<footer class="bg-card/50 border-t border-border/50">
+  <div class="container mx-auto px-4 md:px-6 py-16">
+    <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-12">
+
+      <!-- Brand -->
+      <div class="col-span-2 md:col-span-4 lg:col-span-1 mb-4 lg:mb-0">
+        <a th:href="@{/}" class="flex items-center gap-2 mb-4">
+          <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-primary to-primary/60 flex items-center justify-center">
+            <span class="text-primary-foreground font-bold text-lg">M</span>
+          </div>
+          <span class="font-bold text-xl text-foreground">MEDIPASS</span>
+        </a>
+        <p class="text-muted-foreground text-sm max-w-xs">Plataforma de gestión de atención médica prioritaria para asegurados privados en Colombia.</p>
+      </div>
+
+      <!-- Servicios -->
+      <div>
+        <h4 class="font-semibold text-foreground mb-4">Servicios</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Validación de Pólizas</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Gestión de Citas</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Historial Clínico</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Laboratorio</a></li>
+        </ul>
+      </div>
+
+      <!-- Empresa -->
+      <div>
+        <h4 class="font-semibold text-foreground mb-4">Empresa</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Sobre Nosotros</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Equipo</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Carreras</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Prensa</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal -->
+      <div>
+        <h4 class="font-semibold text-foreground mb-4">Legal</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Términos de Uso</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Privacidad</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Cookies</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Licencias</a></li>
+        </ul>
+      </div>
+
+      <!-- Soporte -->
+      <div>
+        <h4 class="font-semibold text-foreground mb-4">Soporte</h4>
+        <ul class="space-y-3 text-sm">
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Centro de Ayuda</a></li>
+          <li><a href="#contacto" class="text-muted-foreground hover:text-foreground transition-colors">Contacto</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Estado del Sistema</a></li>
+          <li><a href="#" class="text-muted-foreground hover:text-foreground transition-colors">Documentación</a></li>
+        </ul>
+      </div>
+
+    </div>
+
+    <!-- Bottom bar -->
+    <div class="pt-8 border-t border-border/50 flex flex-col md:flex-row justify-between items-center gap-4">
+      <p class="text-muted-foreground text-sm">© 2026 MEDIPASS. Todos los derechos reservados.</p>
+      <div class="flex items-center gap-4">
+        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Twitter/X">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/>
+          </svg>
+        </a>
+        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="LinkedIn">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/>
+          </svg>
+        </a>
+        <a href="#" class="text-muted-foreground hover:text-foreground transition-colors" aria-label="Instagram">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
+            <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zM12 0C8.741 0 8.333.014 7.053.072 2.695.272.273 2.69.073 7.052.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 100 12.324 6.162 6.162 0 000-12.324zM12 16a4 4 0 110-8 4 4 0 010 8zm6.406-11.845a1.44 1.44 0 100 2.881 1.44 1.44 0 000-2.881z"/>
+          </svg>
+        </a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script th:src="@{/js/medipass.js}"></script>
+
+</body>
+</html>

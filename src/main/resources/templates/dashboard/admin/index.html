@@ -1,0 +1,351 @@
+﻿<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head th:replace="~{fragments/head :: head('Dashboard Administrativo')}"></head>
+
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Flash messages -->
+      <div th:if="${successMessage}" class="alert-auto-dismiss flex items-center gap-3 px-4 py-3 rounded-lg bg-success/10 border border-success/30 text-success text-sm">
+        <i data-lucide="check-circle" class="w-4 h-4 flex-shrink-0"></i>
+        <span th:text="${successMessage}"></span>
+      </div>
+      <div th:if="${errorMessage}" class="alert-auto-dismiss flex items-center gap-3 px-4 py-3 rounded-lg bg-destructive/10 border border-destructive/30 text-destructive text-sm">
+        <i data-lucide="alert-circle" class="w-4 h-4 flex-shrink-0"></i>
+        <span th:text="${errorMessage}"></span>
+      </div>
+
+      <!-- ── Stats Grid ─────────────────────────────────── -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Pacientes Activos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.activePatients ?: '0'}">0</p>
+              <p class="text-xs text-success mt-1 flex items-center gap-1">
+                <i data-lucide="trending-up" class="w-3 h-3"></i> Sistema activo
+              </p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Citas Hoy</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.todayAppointments ?: '0'}">0</p>
+              <p class="text-xs text-muted-foreground mt-1"
+                 th:if="${stats != null}"
+                 th:text="${stats.pendingWaiting + ' en espera'}">0 en espera</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-info/10 flex items-center justify-center text-info">
+              <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Pólizas por Vencer</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.expiringPolicies ?: '0'}">0</p>
+              <p class="text-xs text-muted-foreground mt-1">Próximos 30 días</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="shield-alert" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Tickets Abiertos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.openTickets ?: '0'}">0</p>
+              <p class="text-xs text-muted-foreground mt-1"
+                 th:if="${stats != null}"
+                 th:text="${stats.priorityTickets + ' prioritarios'}">0 prioritarios</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-accent/10 flex items-center justify-center text-accent">
+              <i data-lucide="alert-triangle" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Charts row ────────────────────────────────── -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+
+        <!-- Actividad Semanal -->
+        <div class="bg-card border border-border/50 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-foreground font-semibold flex items-center gap-2">
+              <i data-lucide="activity" class="w-5 h-5 text-primary"></i>
+              Actividad Semanal
+            </h3>
+          </div>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border/50">
+                  <th class="text-left pb-3 text-muted-foreground font-medium">Día</th>
+                  <th class="text-right pb-3 text-primary font-medium">Pacientes</th>
+                  <th class="text-right pb-3 text-accent font-medium">Citas</th>
+                  <th class="text-right pb-3 text-info font-medium">Validaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="point : ${weeklyActivity}" class="border-b border-border/30 table-row-hover">
+                  <td class="py-2.5 text-foreground" th:text="${point.name}">—</td>
+                  <td class="py-2.5 text-right text-primary font-medium" th:text="${point.pacientes}">0</td>
+                  <td class="py-2.5 text-right text-accent font-medium" th:text="${point.citas}">0</td>
+                  <td class="py-2.5 text-right text-info font-medium" th:text="${point.validaciones}">0</td>
+                </tr>
+                <tr th:if="${weeklyActivity == null or #lists.isEmpty(weeklyActivity)}">
+                  <td colspan="4" class="py-6 text-center text-muted-foreground text-sm">Sin datos disponibles</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Uso por Módulo -->
+        <div class="bg-card border border-border/50 rounded-xl p-6">
+          <div class="flex items-center justify-between mb-5">
+            <h3 class="text-foreground font-semibold flex items-center gap-2">
+              <i data-lucide="trending-up" class="w-5 h-5 text-primary"></i>
+              Uso por Módulo
+            </h3>
+          </div>
+          <div class="space-y-4">
+            <div th:each="mod : ${modulesUsage}" class="space-y-1.5">
+              <div class="flex justify-between text-sm">
+                <span class="text-foreground" th:text="${mod.name}">Módulo</span>
+                <span class="text-primary font-semibold" th:text="${mod.percentage + '%'}">0%</span>
+              </div>
+              <div class="h-2 bg-secondary/50 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full transition-all duration-700"
+                     th:style="'width: ' + ${mod.percentage} + '%'"></div>
+              </div>
+            </div>
+            <p th:if="${modulesUsage == null or #lists.isEmpty(modulesUsage)}"
+               class="text-center text-muted-foreground text-sm py-4">Sin datos de uso disponibles</p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- ── Auditoría Reciente ─────────────────────────── -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-primary"></i>
+            Auditoría Reciente
+          </h3>
+          <a th:href="@{/dashboard/admin/audit}"
+             class="text-sm text-primary hover:underline flex items-center gap-1">
+            Ver todo <i data-lucide="arrow-right" class="w-3 h-3"></i>
+          </a>
+        </div>
+        <div class="px-6 pb-6 divide-y divide-border/30">
+          <div th:each="entry : ${recentAudit}"
+               class="flex items-center justify-between py-3">
+            <div class="flex items-center gap-3">
+              <span th:classappend="${entry.type == 'create'} ? 'bg-success/20 text-success' :
+                                    (${entry.type == 'approve'} ? 'bg-primary/20 text-primary' :
+                                    (${entry.type == 'cancel'} ? 'bg-destructive/20 text-destructive' :
+                                    (${entry.type == 'resolve'} ? 'bg-info/20 text-info' : 'bg-secondary text-secondary-foreground')))"
+                    class="px-2 py-0.5 rounded-full text-xs font-medium capitalize"
+                    th:text="${entry.type}">—</span>
+              <div>
+                <p class="text-sm font-medium text-foreground" th:text="${entry.action}">Acción</p>
+                <p class="text-xs text-muted-foreground" th:text="${entry.user}">Usuario</p>
+              </div>
+            </div>
+            <span class="text-xs text-muted-foreground whitespace-nowrap" th:text="${entry.time}">—</span>
+          </div>
+          <p th:if="${recentAudit == null or #lists.isEmpty(recentAudit)}"
+             class="text-center text-muted-foreground text-sm py-6">No hay registros de auditoría recientes</p>
+        </div>
+      </div>
+
+      <!-- ── Quick Actions ─────────────────────────────── -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <a th:href="@{/dashboard/admin/users/new}"
+           class="flex flex-col items-center gap-2 p-5 bg-card border border-border/50 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary/20 transition-colors">
+            <i data-lucide="user-plus" class="w-5 h-5"></i>
+          </div>
+          <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors text-center">Nuevo Usuario</span>
+        </a>
+        <a th:href="@{/dashboard/admin/users}"
+           class="flex flex-col items-center gap-2 p-5 bg-card border border-border/50 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-info/10 flex items-center justify-center text-info group-hover:bg-info/20 transition-colors">
+            <i data-lucide="users" class="w-5 h-5"></i>
+          </div>
+          <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors text-center">Gestionar Usuarios</span>
+        </a>
+        <a th:href="@{/dashboard/admin/reports}"
+           class="flex flex-col items-center gap-2 p-5 bg-card border border-border/50 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-accent/10 flex items-center justify-center text-accent group-hover:bg-accent/20 transition-colors">
+            <i data-lucide="bar-chart-3" class="w-5 h-5"></i>
+          </div>
+          <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors text-center">Ver Reportes</span>
+        </a>
+        <a th:href="@{/dashboard/admin/audit}"
+           class="flex flex-col items-center gap-2 p-5 bg-card border border-border/50 rounded-xl hover:border-primary/50 hover:bg-primary/5 transition-all group">
+          <div class="w-10 h-10 rounded-lg bg-warning/10 flex items-center justify-center text-warning group-hover:bg-warning/20 transition-colors">
+            <i data-lucide="shield" class="w-5 h-5"></i>
+          </div>
+          <span class="text-sm text-muted-foreground group-hover:text-foreground transition-colors text-center">Auditoría</span>
+        </a>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>
+
+
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Stats Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5 col-span-1 md:col-span-1 xl:col-span-2">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Pacientes Activos</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.activePatients ?: '0'}">0</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-primary/10 flex items-center justify-center text-primary">
+              <i data-lucide="users" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5 col-span-1 md:col-span-1 xl:col-span-2">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Citas Hoy</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.todayAppointments ?: '0'}">0</p>
+              <p class="text-xs text-muted-foreground mt-1" th:if="${stats != null}" th:text="${stats.pendingWaiting + ' en espera'}"></p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-info/10 flex items-center justify-center text-info">
+              <i data-lucide="calendar" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+        <div class="stat-card bg-card rounded-xl border border-border/50 p-5 col-span-1 md:col-span-1 xl:col-span-2">
+          <div class="flex items-start justify-between">
+            <div>
+              <p class="text-sm text-muted-foreground mb-1">Polizas por Vencer</p>
+              <p class="text-3xl font-bold text-foreground" th:text="${stats?.expiringPolicies ?: '0'}">0</p>
+              <p class="text-xs text-muted-foreground mt-1">Proximos 30 dias</p>
+            </div>
+            <div class="w-11 h-11 rounded-lg bg-warning/10 flex items-center justify-center text-warning">
+              <i data-lucide="shield" class="w-5 h-5"></i>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Charts row -->
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <!-- Actividad Semanal -->
+        <div class="bg-card border border-border/50 rounded-xl p-6">
+          <h3 class="text-foreground font-semibold flex items-center gap-2 mb-4">
+            <i data-lucide="activity" class="w-5 h-5 text-primary"></i>
+            Actividad Semanal
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-border/50">
+                  <th class="text-left py-2 text-muted-foreground font-medium">Dia</th>
+                  <th class="text-right py-2 text-primary font-medium">Pacientes</th>
+                  <th class="text-right py-2 text-accent font-medium">Citas</th>
+                  <th class="text-right py-2 text-info font-medium">Validaciones</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr th:each="point : ${weeklyActivity ?: T(java.util.Collections).emptyList()}" class="border-b border-border/30 table-row-hover">
+                  <td class="py-2.5 text-foreground" th:text="${point.name}">Lun</td>
+                  <td class="py-2.5 text-right text-primary" th:text="${point.pacientes}">0</td>
+                  <td class="py-2.5 text-right text-accent" th:text="${point.citas}">0</td>
+                  <td class="py-2.5 text-right text-info" th:text="${point.validaciones}">0</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Uso por Modulo -->
+        <div class="bg-card border border-border/50 rounded-xl p-6">
+          <h3 class="text-foreground font-semibold flex items-center gap-2 mb-4">
+            <i data-lucide="trending-up" class="w-5 h-5 text-primary"></i>
+            Uso por Modulo
+          </h3>
+          <div class="space-y-3">
+            <div th:each="mod : ${modulesUsage ?: T(java.util.Collections).emptyList()}" class="space-y-1">
+              <div class="flex justify-between text-sm">
+                <span class="text-foreground" th:text="${mod.name}">Modulo</span>
+                <span class="text-primary font-medium" th:text="${mod.value + '%'}">0%</span>
+              </div>
+              <div class="h-2 bg-secondary/50 rounded-full overflow-hidden">
+                <div class="h-full bg-gradient-to-r from-primary to-primary/60 rounded-full"
+                     th:style="'width: ' + ${mod.percentage} + '%'"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Auditoria Reciente -->
+      <div class="bg-card border border-border/50 rounded-xl overflow-hidden">
+        <div class="flex items-center justify-between p-6 pb-4">
+          <h3 class="text-foreground font-semibold flex items-center gap-2">
+            <i data-lucide="file-text" class="w-5 h-5 text-primary"></i>
+            Auditoria Reciente
+          </h3>
+          <a th:href="@{/dashboard/admin/audit}" class="text-sm text-primary hover:underline flex items-center gap-1">
+            Ver todo <i data-lucide="arrow-right" class="w-4 h-4"></i>
+          </a>
+        </div>
+        <div class="px-6 pb-6 space-y-3">
+          <div th:each="entry : ${recentAudit ?: T(java.util.Collections).emptyList()}"
+               class="flex items-center justify-between py-3 border-b border-border/50 last:border-0">
+            <div class="flex items-center gap-4">
+              <span class="px-2 py-1 rounded-full text-xs font-medium bg-secondary text-secondary-foreground"
+                    th:text="${entry.type}">update</span>
+              <div>
+                <p class="text-sm font-medium text-foreground" th:text="${entry.action}">Accion</p>
+                <p class="text-xs text-muted-foreground" th:text="${entry.user}">Usuario</p>
+              </div>
+            </div>
+            <span class="text-xs text-muted-foreground whitespace-nowrap" th:text="${entry.time}">00:00</span>
+          </div>
+          <p th:if="${recentAudit == null or #lists.isEmpty(recentAudit)}" class="text-center text-muted-foreground text-sm py-4">
+            No hay registros de auditoria recientes
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+<script th:src="@{/js/medipass.js}"></script>
+</body>
+</html>

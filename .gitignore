@@ -1,0 +1,58 @@
+# ═══════════════════════════════════════════════════════════
+# MEDIPASS — .gitignore
+# ═══════════════════════════════════════════════════════════
+
+# ── Maven build output ────────────────────────────────────
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# ── Eclipse IDE artifacts ─────────────────────────────────
+bin/
+.classpath
+.factorypath
+.project
+.settings/
+*.launch
+
+# ── IntelliJ IDEA ─────────────────────────────────────────
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# ── VS Code ───────────────────────────────────────────────
+.vscode/
+
+# ── OS artifacts ──────────────────────────────────────────
+.DS_Store
+Thumbs.db
+*.swp
+*.swo
+
+# ── Frontend – Node / Next.js ─────────────────────────────
+frontend/node_modules/
+frontend/.next/
+frontend/.pnpm-store/
+frontend/.pnpm-debug.log
+
+# ── Frontend build output → generado por pnpm build ───────
+# (se incluye en el JAR pero no se versiona en git)
+src/main/resources/static/
+!src/main/resources/static/.gitkeep
+
+# ── Logs ──────────────────────────────────────────────────
+*.log
+logs/
+
+# ── Secrets / environment ─────────────────────────────────
+.env
+.env.local
+.env.*.local
+
+# -- Local secrets (never commit) -------------------------------------------
+src/main/resources/application-local.properties
+src/main/resources/application-*.properties
+!src/main/resources/application.properties

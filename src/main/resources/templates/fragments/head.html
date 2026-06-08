@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+
+<head th:fragment="head(pageTitle)">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title th:text="${pageTitle != null ? pageTitle + ' | MEDIPASS' : 'MEDIPASS | Gestión de Atención Médica Premium'}">
+    MEDIPASS | Gestión de Atención Médica Premium
+  </title>
+  <meta name="description"
+        content="Plataforma de gestión de atención médica prioritaria para asegurados privados en Colombia." />
+
+  <!-- 1. Google Fonts: Inter -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="anonymous" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;display=swap"
+        rel="stylesheet" />
+
+  <!-- 2. Tailwind config - definido ANTES del CDN usando window.tailwind para que lo lea al inicializar -->
+  <script>
+    window.tailwind = {
+      config: {
+        theme: {
+          extend: {
+            colors: {
+              background : '#14182a',
+              foreground : '#fafafa',
+              card       : { DEFAULT: '#1c2036', foreground: '#fafafa' },
+              popover    : { DEFAULT: '#1c2036', foreground: '#fafafa' },
+              primary    : { DEFAULT: '#00d4aa', foreground: '#14182a' },
+              secondary  : { DEFAULT: '#252d42', foreground: '#fafafa' },
+              muted      : { DEFAULT: '#252d42', foreground: '#a0a0a0' },
+              accent     : { DEFAULT: '#e06030', foreground: '#fafafa' },
+              destructive: { DEFAULT: '#ef4444', foreground: '#fafafa' },
+              border     : '#323a52',
+              input      : '#252d42',
+              ring       : '#00d4aa',
+              success    : { DEFAULT: '#22c55e', foreground: '#14182a' },
+              warning    : { DEFAULT: '#d4a00a', foreground: '#14182a' },
+              info       : { DEFAULT: '#3b82f6', foreground: '#fafafa' },
+              sidebar: {
+                DEFAULT            : '#171c2e',
+                foreground         : '#fafafa',
+                primary            : { DEFAULT: '#00d4aa', foreground: '#14182a' },
+                accent             : { DEFAULT: '#252d42', foreground: '#fafafa' },
+                border             : '#323a52'
+              }
+            },
+            borderRadius: {
+              DEFAULT: '0.75rem',
+              sm : '0.5rem',
+              md : '0.625rem',
+              lg : '0.75rem',
+              xl : '1rem',
+              '2xl': '1.25rem'
+            },
+            fontFamily: {
+              sans: ['Inter', 'system-ui', '-apple-system', 'sans-serif']
+            },
+            boxShadow: {
+              'glow-primary'   : '0 0 40px rgba(0,212,170,0.15)',
+              'glow-primary-sm': '0 0 20px rgba(0,212,170,0.10)'
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- 3. Tailwind CSS CDN (v3) - lee window.tailwind.config al inicializar -->
+  <script src="https://cdn.tailwindcss.com"></script>
+
+  <!-- 3. Lucide Icons -->
+  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+
+  <!-- 5. CSS personalizado de MEDIPASS -->
+  <link rel="stylesheet" th:href="@{/css/medipass.css}" />
+
+  <!-- 6. Estilos base inline -->
+  <style>
+    body { font-family: 'Inter', system-ui, sans-serif; background-color: #14182a; color: #fafafa; }
+  </style>
+</head>
+
+</html>

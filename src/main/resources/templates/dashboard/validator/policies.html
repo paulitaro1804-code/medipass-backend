@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{fragments/head :: head('Gestión de Pólizas')}"></head>
+<body class="font-sans bg-background text-foreground antialiased">
+<div id="sidebar-overlay"></div>
+<div class="min-h-screen bg-background">
+  <div th:replace="~{fragments/sidebar :: sidebar}"></div>
+  <main class="lg:ml-64">
+    <div th:replace="~{fragments/dashboard-header :: dashboardHeader}"></div>
+
+    <div class="p-4 md:p-6 space-y-6">
+
+      <!-- Tab buttons -->
+      <div class="flex gap-2 flex-wrap">
+        <button onclick="showTab('pending')" id="btn-pending"
+                class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-primary text-primary-foreground">
+          <i data-lucide="hourglass" class="w-4 h-4 inline-block mr-1"></i>
+          Pendientes
+          <span class="ml-1 px-1.5 py-0.5 rounded text-xs bg-primary-foreground/20"
+                th:text="${pendingRequests != null ? #lists.size(pendingRequests) : 0}">0</span>
+        </button>
+        <button onclick="showTab('approved')" id="btn-approved"
+                class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-secondary text-muted-foreground hover:text-foreground">
+          <i data-lucide="check-circle" class="w-4 h-4 inline-block mr-1"></i>
+          Aprobadas
+          <span class="ml-1 px-1.5 py-0.5 rounded text-xs bg-secondary"
+                th:text="${approvedRequests != null ? #lists.size(approvedRequests) : 0}">0</span>
+        </button>
+        <button onclick="showTab('rejected')" id="btn-rejected"
+                class="tab-btn px-4 py-2 rounded-lg text-sm font-medium transition-colors bg-secondary text-muted-foreground hover:text-foreground">
+          <i data-lucide="x-circle" class="w-4 h-4 inline-block mr-1"></i>
+          Rechazadas
+          <span class="ml-1 px-1.5 py-0.5 rounded text-xs bg-secondary"
+                th:text="${rejectedRequests != null ? #lists.size(rejectedRequests) : 0}">0</span>
+        </button>
+      </div>
+
+      <!-- Tab: Pendientes -->
+      <div id="tab-pending" class="tab-pane bg-card rounded-xl border border-border/50">
+        <div class="p-4 border-b border-border/50">
+          <h2 class="text-base font-semibold text-foreground">Pólizas Pendientes de Validación</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-muted-foreground border-b border-border/50">
+                <th class="text-left p-4 font-medium">Paciente</th>
+                <th class="text-left p-4 font-medium">Documento</th>
+                <th class="text-left p-4 font-medium">N° Póliza</th>
+                <th class="text-left p-4 font-medium">Aseguradora</th>
+                <th class="text-left p-4 font-medium">Plan</th>
+                <th class="text-left p-4 font-medium">Enviado</th>
+                <th class="text-left p-4 font-medium">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${pendingRequests}"
+                  class="border-b border-border/30 hover:bg-secondary/30 transition-colors">
+                <td class="p-4 text-foreground font-medium" th:text="${r.patient}">Paciente</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.document}">Doc</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.policy}">N/A</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.insurer}">Aseguradora</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.plan}">Plan</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.submitted}">Fecha</td>
+                <td class="p-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium bg-warning/10 text-warning"
+                        th:text="${r.status}">PENDIENTE</span>
+                </td>
+              </tr>
+              <tr th:if="${pendingRequests == null or #lists.isEmpty(pendingRequests)}">
+                <td colspan="7" class="p-8 text-center text-muted-foreground">
+                  <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                  <p>No hay pólizas pendientes</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Aprobadas -->
+      <div id="tab-approved" class="tab-pane hidden bg-card rounded-xl border border-border/50">
+        <div class="p-4 border-b border-border/50">
+          <h2 class="text-base font-semibold text-foreground">Pólizas Aprobadas</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-muted-foreground border-b border-border/50">
+                <th class="text-left p-4 font-medium">Paciente</th>
+                <th class="text-left p-4 font-medium">Documento</th>
+                <th class="text-left p-4 font-medium">N° Póliza</th>
+                <th class="text-left p-4 font-medium">Aseguradora</th>
+                <th class="text-left p-4 font-medium">Plan</th>
+                <th class="text-left p-4 font-medium">Aprobado</th>
+                <th class="text-left p-4 font-medium">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${approvedRequests}"
+                  class="border-b border-border/30 hover:bg-secondary/30 transition-colors">
+                <td class="p-4 text-foreground font-medium" th:text="${r.patient}">Paciente</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.document}">Doc</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.policy}">N/A</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.insurer}">Aseguradora</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.plan}">Plan</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.submitted}">Fecha</td>
+                <td class="p-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium bg-success/10 text-success"
+                        th:text="${r.status}">APROBADA</span>
+                </td>
+              </tr>
+              <tr th:if="${approvedRequests == null or #lists.isEmpty(approvedRequests)}">
+                <td colspan="7" class="p-8 text-center text-muted-foreground">
+                  <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                  <p>No hay pólizas aprobadas</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Tab: Rechazadas -->
+      <div id="tab-rejected" class="tab-pane hidden bg-card rounded-xl border border-border/50">
+        <div class="p-4 border-b border-border/50">
+          <h2 class="text-base font-semibold text-foreground">Pólizas Rechazadas</h2>
+        </div>
+        <div class="overflow-x-auto">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-muted-foreground border-b border-border/50">
+                <th class="text-left p-4 font-medium">Paciente</th>
+                <th class="text-left p-4 font-medium">Documento</th>
+                <th class="text-left p-4 font-medium">N° Póliza</th>
+                <th class="text-left p-4 font-medium">Aseguradora</th>
+                <th class="text-left p-4 font-medium">Plan</th>
+                <th class="text-left p-4 font-medium">Enviado</th>
+                <th class="text-left p-4 font-medium">Estado</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr th:each="r : ${rejectedRequests}"
+                  class="border-b border-border/30 hover:bg-secondary/30 transition-colors">
+                <td class="p-4 text-foreground font-medium" th:text="${r.patient}">Paciente</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.document}">Doc</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.policy}">N/A</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.insurer}">Aseguradora</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.plan}">Plan</td>
+                <td class="p-4 text-muted-foreground" th:text="${r.submitted}">Fecha</td>
+                <td class="p-4">
+                  <span class="px-2 py-1 rounded-full text-xs font-medium bg-destructive/10 text-destructive"
+                        th:text="${r.status}">RECHAZADA</span>
+                </td>
+              </tr>
+              <tr th:if="${rejectedRequests == null or #lists.isEmpty(rejectedRequests)}">
+                <td colspan="7" class="p-8 text-center text-muted-foreground">
+                  <i data-lucide="inbox" class="w-8 h-8 mx-auto mb-2 opacity-50"></i>
+                  <p>No hay pólizas rechazadas</p>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script th:src="@{/js/medipass.js}"></script>
+<script>
+  function showTab(name) {
+    document.querySelectorAll('.tab-pane').forEach(function(el) { el.classList.add('hidden'); });
+    document.getElementById('tab-' + name).classList.remove('hidden');
+    document.querySelectorAll('.tab-btn').forEach(function(btn) {
+      btn.classList.remove('bg-primary', 'text-primary-foreground');
+      btn.classList.add('bg-secondary', 'text-muted-foreground');
+    });
+    var active = document.getElementById('btn-' + name);
+    active.classList.add('bg-primary', 'text-primary-foreground');
+    active.classList.remove('bg-secondary', 'text-muted-foreground');
+  }
+</script>
+</body>
+</html>

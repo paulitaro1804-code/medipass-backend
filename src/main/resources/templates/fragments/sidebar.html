@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<!--
+  FRAGMENTO: sidebar
+  Variables del modelo:
+    - ${role}      : "admin" | "patient" | "validator" | "coordinator" | "doctor" | "lab" | "support"
+    - ${userName}  : Nombre del usuario (String)
+    - ${userEmail} : Email del usuario (String)
+    - ${activeNav} : Clave del ítem activo (ej: "dashboard", "appointments", etc.)
+-->
+<body>
+
+<aside th:fragment="sidebar"
+       id="dashboard-sidebar"
+       class="fixed left-0 top-0 h-full w-64 bg-sidebar border-r border-sidebar-border flex flex-col z-40">
+
+  <!-- Logo -->
+  <div class="p-6 border-b border-sidebar-border">
+    <a th:href="@{/}" class="flex items-center gap-2">
+      <div class="w-10 h-10 rounded-lg bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center">
+        <span class="text-sidebar-primary-foreground font-bold text-lg">M</span>
+      </div>
+      <div>
+        <span class="font-bold text-lg text-sidebar-foreground">MEDIPASS</span>
+        <p class="text-xs text-muted-foreground"
+           th:text="${role == 'admin'      ? 'Panel de Control'      :
+                      role == 'patient'    ? 'Portal del Paciente'   :
+                      role == 'validator'  ? 'Gestión de Pólizas'    :
+                      role == 'coordinator'? 'Coordinación Médica'   :
+                      role == 'doctor'     ? 'Historia Clínica'      :
+                      role == 'lab'        ? 'Gestión de Resultados' :
+                                            'Centro de Ayuda'}">Portal</p>
+      </div>
+    </a>
+  </div>
+
+  <!-- Navegación dinámica por rol -->
+  <nav class="flex-1 p-4 space-y-1 overflow-y-auto">
+
+    <!-- ===== ADMIN ===== -->
+    <th:block th:if="${role == 'admin'}">
+      <a th:href="@{/dashboard/admin}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/admin/users}"
+         th:classappend="${activeNav == 'users'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i> Usuarios
+      </a>
+      <a th:href="@{/dashboard/admin/reports}"
+         th:classappend="${activeNav == 'reports'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Reportes
+      </a>
+      <a th:href="@{/dashboard/admin/audit}"
+         th:classappend="${activeNav == 'audit'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="shield" class="w-5 h-5"></i> Auditoría
+      </a>
+    </th:block>
+
+    <!-- ===== PATIENT ===== -->
+    <th:block th:if="${role == 'patient'}">
+      <a th:href="@{/dashboard/patient}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Inicio
+      </a>
+      <a th:href="@{/dashboard/patient/appointments}"
+         th:classappend="${activeNav == 'appointments'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="calendar" class="w-5 h-5"></i> Mis Citas
+      </a>
+      <a th:href="@{/dashboard/patient/records}"
+         th:classappend="${activeNav == 'records'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="file-text" class="w-5 h-5"></i> Historial Clínico
+      </a>
+      <a th:href="@{/dashboard/patient/lab-results}"
+         th:classappend="${activeNav == 'lab-results'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="microscope" class="w-5 h-5"></i> Resultados Lab
+      </a>
+      <a th:href="@{/dashboard/patient/policy}"
+         th:classappend="${activeNav == 'policy'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="shield" class="w-5 h-5"></i> Mi Póliza
+      </a>
+    </th:block>
+
+    <!-- ===== VALIDATOR ===== -->
+    <th:block th:if="${role == 'validator'}">
+      <a th:href="@{/dashboard/validator}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/validator/queue}"
+         th:classappend="${activeNav == 'queue'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="clipboard-list" class="w-5 h-5"></i> Cola de Validación
+      </a>
+      <a th:href="@{/dashboard/validator/approved}"
+         th:classappend="${activeNav == 'approved'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="check-circle" class="w-5 h-5"></i> Aprobadas
+      </a>
+      <a th:href="@{/dashboard/validator/rejected}"
+         th:classappend="${activeNav == 'rejected'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i> Rechazadas
+      </a>
+      <a th:href="@{/dashboard/validator/alerts}"
+         th:classappend="${activeNav == 'alerts'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="bell" class="w-5 h-5"></i> Alertas Vencimiento
+      </a>
+    </th:block>
+
+    <!-- ===== COORDINATOR ===== -->
+    <th:block th:if="${role == 'coordinator'}">
+      <a th:href="@{/dashboard/coordinator}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/coordinator/schedule}"
+         th:classappend="${activeNav == 'schedule'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="calendar" class="w-5 h-5"></i> Agenda General
+      </a>
+      <a th:href="@{/dashboard/coordinator/waitlist}"
+         th:classappend="${activeNav == 'waitlist'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i> Lista de Espera
+      </a>
+      <a th:href="@{/dashboard/coordinator/doctors}"
+         th:classappend="${activeNav == 'doctors'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="stethoscope" class="w-5 h-5"></i> Médicos
+      </a>
+    </th:block>
+
+    <!-- ===== DOCTOR ===== -->
+    <th:block th:if="${role == 'doctor'}">
+      <a th:href="@{/dashboard/doctor}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/doctor/schedule}"
+         th:classappend="${activeNav == 'schedule'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="calendar" class="w-5 h-5"></i> Mi Agenda
+      </a>
+      <a th:href="@{/dashboard/doctor/patients}"
+         th:classappend="${activeNav == 'patients'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="users" class="w-5 h-5"></i> Pacientes
+      </a>
+      <a th:href="@{/dashboard/doctor/records}"
+         th:classappend="${activeNav == 'records'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="file-text" class="w-5 h-5"></i> Historias Clínicas
+      </a>
+      <a th:href="@{/dashboard/doctor/lab-orders}"
+         th:classappend="${activeNav == 'lab-orders'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="flask-conical" class="w-5 h-5"></i> Solicitar Exámenes
+      </a>
+    </th:block>
+
+    <!-- ===== LAB ===== -->
+    <th:block th:if="${role == 'lab'}">
+      <a th:href="@{/dashboard/lab}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/lab/pending}"
+         th:classappend="${activeNav == 'pending'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="clipboard-list" class="w-5 h-5"></i> Órdenes Pendientes
+      </a>
+      <a th:href="@{/dashboard/lab/upload}"
+         th:classappend="${activeNav == 'upload'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="flask-conical" class="w-5 h-5"></i> Cargar Resultados
+      </a>
+      <a th:href="@{/dashboard/lab/published}"
+         th:classappend="${activeNav == 'published'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="check-circle" class="w-5 h-5"></i> Publicados
+      </a>
+      <a th:href="@{/dashboard/lab/critical}"
+         th:classappend="${activeNav == 'critical'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="alert-triangle" class="w-5 h-5"></i> Valores Críticos
+      </a>
+    </th:block>
+
+    <!-- ===== SUPPORT ===== -->
+    <th:block th:if="${role == 'support'}">
+      <a th:href="@{/dashboard/support}"
+         th:classappend="${activeNav == 'dashboard'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="layout-dashboard" class="w-5 h-5"></i> Dashboard
+      </a>
+      <a th:href="@{/dashboard/support/tickets}"
+         th:classappend="${activeNav == 'tickets'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="message-square" class="w-5 h-5"></i> Tickets Abiertos
+      </a>
+      <a th:href="@{/dashboard/support/pqrs}"
+         th:classappend="${activeNav == 'pqrs'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="clipboard-list" class="w-5 h-5"></i> PQRS
+      </a>
+      <a th:href="@{/dashboard/support/resolved}"
+         th:classappend="${activeNav == 'resolved'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="check-circle" class="w-5 h-5"></i> Resueltos
+      </a>
+      <a th:href="@{/dashboard/support/metrics}"
+         th:classappend="${activeNav == 'metrics'} ? ' bg-sidebar-accent text-sidebar-primary' : ' text-sidebar-foreground/70 hover:text-sidebar-foreground hover:bg-sidebar-accent/50'"
+         class="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors">
+        <i data-lucide="bar-chart-3" class="w-5 h-5"></i> Métricas
+      </a>
+    </th:block>
+
+  </nav>
+
+  <!-- Perfil del usuario / Cerrar sesión -->
+  <div class="p-4 border-t border-sidebar-border">
+    <div class="flex items-center gap-3 mb-4">
+      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-sidebar-primary to-sidebar-primary/60 flex items-center justify-center flex-shrink-0">
+        <span class="text-sidebar-primary-foreground font-semibold text-sm"
+              th:text="${userName != null ? userName.substring(0,1).toUpperCase() : 'U'}">U</span>
+      </div>
+      <div class="flex-1 min-w-0">
+        <p class="text-sm font-medium text-sidebar-foreground truncate"
+           th:text="${userName ?: 'Usuario'}">Usuario</p>
+        <p class="text-xs text-muted-foreground truncate"
+           th:text="${userEmail ?: 'usuario@medipass.co'}">usuario@medipass.co</p>
+      </div>
+    </div>
+    <!-- FIXED: logout URL is /logout (Spring Security), NOT /auth/logout -->
+    <form th:action="@{/logout}" method="post">
+      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <button type="submit"
+              class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-muted-foreground hover:text-destructive hover:bg-destructive/10 transition-colors w-full">
+        <i data-lucide="log-out" class="w-4 h-4"></i>
+        Cerrar Sesión
+      </button>
+    </form>
+  </div>
+
+</aside>
+
+</body>
+</html>
